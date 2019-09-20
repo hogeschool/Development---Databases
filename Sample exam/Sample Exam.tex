@@ -1,0 +1,135 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{pdfpages}
+\usepackage{comment}
+\usepackage{mathpartir}
+\usepackage[top=2cm, bottom=3cm, left=1.5cm, right=1.5cm]{geometry}
+
+\newcommand{\tu}{\textunderscore}
+
+\lstset{
+  language=sql,
+	tabsize=2,
+	basicstyle=\small\ttfamily,
+	columns=fixed,
+	showstringspaces=false,
+	breaklines=true,
+	showtabs=false,
+	showspaces=false,
+	showstringspaces=false,
+}
+
+\newcommand{\courseCode}{Development - Databases}
+%\newcommand{\git}{ \texttt{Dev81718First} }
+
+\newcounter{ExerciseCount}
+\setcounter{ExerciseCount}{1}
+
+\newcommand{\functionEx}[3]{
+  Implement a function
+  
+  \vspace{0.15cm}
+  \texttt{let #1 #2 = ...}
+   
+   \vspace{0.15cm}
+   #3
+}
+\newcommand{\emptyPlace}{\tu\tu\tu}
+\newcommand{\exercise}[2]{\noindent \textbf{Exercise \theExerciseCount \space - (#2 points):}
+  
+  \vspace{0.15cm}
+ #1 \addtocounter{ExerciseCount}{1}
+}
+
+\title{\courseCode}
+\date {  }
+
+
+\begin{document}
+%\includepdf{Cover/first}
+\maketitle
+
+\huge
+\textbf{Database definition for the exam}
+\normalsize
+
+
+\begin{lstlisting}[frame=single]
+create table "User" (
+	"Id" integer primary key,
+	"Email" varchar(30) unique,
+	"Username" varchar(30) unique,
+	"Balance" real check ("Balance" > 0),
+	"CreditCardNo" char(16)
+);
+
+create table "Game" (
+	"Title" varchar(50),
+	"Year" integer,
+  "Published" boolean,
+	"Price" real check ("Price" > 0),
+	"PEGI" integer check ("PEGI" > 0),
+	primary key("Title", "Publisher", "Year")
+);
+
+create table "User_Game" (
+	"UserId" integer,
+	"Title" varchar(50),
+	"Publisher" varchar(20),
+	"Year" integer,
+	primary key ("UserId", "Title", "Publisher", "Year"),
+  foreign key ("UserId") references "User" on delete cascade,
+  foreign key ("Title", "Publisher", "Year") references "Game" on delete cascade
+);
+
+create table "Review"  (
+  "UserId" integer not null references "User" on delete cascade,
+  "Title" varchar(50),
+  "Text" text,
+  "Score" smallint check ("Score" between 0 and 10),
+  "GameId" integer not null references "User" on delete cascade,
+  "Date" timestamp without time zone, 
+  primary key ("UserId", "Title")
+);
+\end{lstlisting}
+
+\newpage
+
+\exercise{
+  \noindent
+  Write a query that adds the following two tables to the database:
+  \begin{itemize}
+  \item A table \texttt{Publisher} with the following columns:
+    \begin{table}[!h]
+      \centering
+      \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Column} & \textbf{Type}\\
+        \hline
+        \texttt{Id} & \texttt{integer}\\
+        \hline
+        \texttt{Name} & \texttt{varchar(20)}\\
+        \hline
+        \texttt{Founded} & \texttt{integer}\\
+        \hline
+      \end{tabular}
+    \end{table}
+    and the following constraints:
+    \begin{itemize}
+    \item The primary key is \texttt{Id}.
+    \item \texttt{Name} cannot be \texttt{NULL}.
+    \item \texttt{Founded} must be greater than \texttt{1990}. 
+    \end{itemize}
+  \end{itemize}
+}{10}
+\exercise{
+Assuming of having performed the change of schema in the previous question, define a reference between \texttt{Producer} and \texttt{Game}, such that a producer can publish different games but a game can only be published by one producer.
+}{10}
+\end{document}
