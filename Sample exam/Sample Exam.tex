@@ -45,6 +45,7 @@
 \newcommand{\exercise}[2]{\noindent \textbf{Exercise \theExerciseCount \space - (#2 points):}
   
   \vspace{0.15cm}
+  \noindent
  #1 \addtocounter{ExerciseCount}{1}
 }
 
@@ -73,20 +74,19 @@ create table "User" (
 create table "Game" (
 	"Title" varchar(50),
 	"Year" integer,
-  "Published" boolean,
+  "Released" boolean,
 	"Price" real check ("Price" > 0),
 	"PEGI" integer check ("PEGI" > 0),
-	primary key("Title", "Publisher", "Year")
+	primary key("Title", "Year")
 );
 
 create table "User_Game" (
 	"UserId" integer,
 	"Title" varchar(50),
-	"Publisher" varchar(20),
 	"Year" integer,
-	primary key ("UserId", "Title", "Publisher", "Year"),
+  primary key ("UserId", "Title", "Year"),
   foreign key ("UserId") references "User" on delete cascade,
-  foreign key ("Title", "Publisher", "Year") references "Game" on delete cascade
+  foreign key ("Title", "Year") references "Game" on delete cascade
 );
 
 create table "Review"  (
@@ -94,19 +94,22 @@ create table "Review"  (
   "Title" varchar(50),
   "Text" text,
   "Score" smallint check ("Score" between 0 and 10),
-  "GameId" integer not null references "User" on delete cascade,
+  "GameTitle" varchar(50) not null,
+  "GameYear" integer not null,
   "Date" timestamp without time zone, 
-  primary key ("UserId", "Title")
+  primary key ("UserId", "Title"),
+  foreign key ("GameTitle","GameYear") references "Game"
 );
 \end{lstlisting}
+
+\noindent
+\textbf{Note:} The PEGI index marks the minimum suggested age to sold that particular game, so for example \texttt{PEGI = 16} means that the game should be sold only to people who are 16 or older.
 
 \newpage
 
 \exercise{
   \noindent
-  Write a query that adds the following two tables to the database:
-  \begin{itemize}
-  \item A table \texttt{Publisher} with the following columns:
+  Write a query that adds the following table \texttt{Publisher} to the database:
     \begin{table}[!h]
       \centering
       \begin{tabular}{|c|c|}
@@ -122,14 +125,45 @@ create table "Review"  (
       \end{tabular}
     \end{table}
     and the following constraints:
-    \begin{itemize}
+    \begin{itemize}[noitemsep]
     \item The primary key is \texttt{Id}.
     \item \texttt{Name} cannot be \texttt{NULL}.
-    \item \texttt{Founded} must be greater than \texttt{1990}. 
+    \item \texttt{Founded} must be greater than \texttt{1970}. 
     \end{itemize}
-  \end{itemize}
-}{10}
+}{5}
+
+\vspace{0.5cm}
 \exercise{
 Assuming of having performed the change of schema in the previous question, define a reference between \texttt{Producer} and \texttt{Game}, such that a producer can publish different games but a game can only be published by one producer.
+}{5}
+
+\vspace{0.5cm}
+\exercise{
+Assume of having performed the change of schema in Exercise 1, add the necessary entries in the database to insert the game \texttt{Call of Duty: Modern Warfare}, that will be published in November 2019 and produced by \texttt{Activision} founded in \texttt{1970}. Activision suggests that the game is sold to people who are 16 or older. You can choose an \texttt{Id} of your choice for the new row in the table \texttt{Publisher}.
 }{10}
+
+\vspace{0.5cm}
+\exercise{
+Write a query that retrieves the title and price of all games released after 2010. Eliminate duplicate rows from the result.
+}{10}
+
+\vspace{0.5cm}
+\exercise{
+Write a query that returns the title and price of all the games owned by user \texttt{pureownage}.
+}{15}
+
+\vspace{0.5cm}
+\exercise{
+Write a query that returns, for each user, his username and the average score of the games he reviewed.
+}{15}
+
+\vspace{0.5cm}
+\exercise{
+Write a query that returns the title and price of the game with the highest average review score.
+}{20}
+
+\vspace{0.5cm}
+\exercise{
+Write a query that returns all the column values of the top-selling game of 2019. The top-selling game is the game with the highest revenue (calculated as the sum of all purchased copies).
+}{20}
 \end{document}
