@@ -2,7 +2,7 @@ create table "User" (
 	"Id" integer primary key,
 	"Email" varchar(30) unique,
 	"Username" varchar(30) unique,
-	"Balance" real check ("Balance" > 0),
+	"Balance" real check ("Balance" >= 0),
 	"CreditCardNo" char(16)
 );
 
@@ -11,7 +11,7 @@ create table "Game" (
 	"Year" integer,
   "Released" boolean,
 	"Price" real check ("Price" > 0),
-	"PEGI" integer check ("PEGI" > 0),
+	"PEGI" integer check ("PEGI" between 0 and 18),
 	primary key("Title", "Year")
 );
 

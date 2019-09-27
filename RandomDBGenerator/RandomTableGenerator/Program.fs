@@ -1,8 +1,9 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open System
+open DBGenerator
+open Databases
 
 [<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
-    0 // return an integer exit code
+  compile "" "test.sql" VGdb
+  0
