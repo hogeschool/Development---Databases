@@ -794,11 +794,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\GiacF\\source\\repos\\RandomTableGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
+      "projectUniqueName": "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
       "projectName": "RandomDatabaseGenerator",
-      "projectPath": "C:\\Users\\GiacF\\source\\repos\\RandomTableGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
+      "projectPath": "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
       "packagesPath": "C:\\Users\\GiacF\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\GiacF\\source\\repos\\RandomTableGenerator\\RandomTableGenerator\\obj\\",
+      "outputPath": "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

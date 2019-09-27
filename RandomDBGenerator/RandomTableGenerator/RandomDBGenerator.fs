@@ -11,8 +11,15 @@ exception CodeGenerationException of string
 type Value =
 | Integer of int
 | Text of string
-| Date of string
 | Real of float
+| Boolean of bool
+with
+  override this.ToString() =
+    match this with
+    | Integer i -> string i
+    | Real r -> string r
+    | Text s -> s
+    | Boolean b -> if b then "true" else "false"
 
 
 type SQLType =
@@ -22,6 +29,7 @@ type SQLType =
 | Text of int
 | Date
 | Real of float * float
+| Boolean
   with
     member this.Random : Value =
       failwith "not implemented"
@@ -71,6 +79,13 @@ type Context =
         Code = StringBuilder()
         GeneratedTables = Map.empty
       }
+
+let getRecordColumnValues (column : string) (records : List<Record>) : List<Value> =
+  records |>
+  List.fold(
+    fun values records ->
+      records.[column] :: values
+  ) []
 
 let rec generatePKValues (table : TableDefinition) (ctxt : Context) =
   let pkValues =
@@ -127,7 +142,7 @@ let generateFKColumnValues
   
   table.ForeignKeys |>
   Map.fold(
-    fun values tableName fkColumns ->
+    fun (values : Record) tableName fkColumns ->
       match ctxt.GeneratedTables.TryFind(tableName) with
       | None -> 
           raise(CodeGenerationException(sprintf "Referenced table %A should already have been filled in with values" tableName))
@@ -136,27 +151,64 @@ let generateFKColumnValues
             records |>
             List.map (
               fun r ->
-                r |> Map.filter (fun c _ -> fkColumns |> List.contains(c))
+                r |> Map.filter (fun c _ -> fkColumns |> List.exists(fun col -> col.Name = c))
             )
-  ) Map.empty
+          let fkValueRandomValues =
+            fkColumns |>
+            List.fold(
+              fun (record : Record) (c : Column) ->
+                let valuesOfChoice = getRecordColumnValues c.Name recordFKColumns
+                let randomValue = randomListElement random valuesOfChoice
+                match randomValue with
+                | None -> raise(CodeGenerationException(sprintf "No values found for foreign key column %A" c))
+                | Some v -> record.Add(c.Name,v)
+            ) Map.empty
+          mergeMaps values fkValueRandomValues
+    ) Map.empty
 
 
-let rec generateTable 
-  (db : Map<string,TableDefinition>) 
+let generateInsertCode (table : string) (records : List<Record>) =
+  let valuesCode =
+    records |>
+    List.map(
+      fun record ->
+        let recordString =
+          record |> Map.toList |>
+          List.map(fun (_,x) -> string x) |>
+          List.reduce(fun r1 r2 -> r1 + "," + r2)
+        "(" + recordString + ")"
+    )
+
+  sprintf "INSERT INTO %s\nVALUES\n%s;"
+    table (valuesCode |> List.reduce(fun x y -> x + ",\n" + y))
+
+
+let rec generateTableValues 
   (table : TableDefinition) 
   (ctxt : Context) : Context =
 
   let tableRecords =
-
     [1..table.Rows] |>
     List.fold(
       fun (records : List<Record>) _ ->
         let pkValues = generatePKValues table ctxt
-        let standardColumns = generateStandardColumnsValues table
+        let standardValues = generateStandardColumnsValues table
+        let fkValues = generateFKColumnValues table ctxt
+        let currentRecord = mergeMaps(mergeMaps pkValues standardValues) fkValues
+        currentRecord :: records
     ) []
   
+  let ctxt = 
+    let insertCode = generateInsertCode table.Name tableRecords
+    { 
+      ctxt with 
+        Code = ctxt.Code.Append(insertCode)
+        GeneratedTables = ctxt.GeneratedTables.Add(table.Name,tableRecords) 
+    }
 
-  failwith "not implemented"
+  ctxt
+
+
       
     
 
@@ -169,14 +221,14 @@ let generateDB (db : Map<string,TableDefinition>) : Context  =
     independentTables |>
     Map.fold (
       fun (ctxt : Context) _ table ->
-        { ctxt with Code = ctxt.Code.Append(generateTable db table ctxt) }
+        { ctxt with Code = ctxt.Code.Append(generateTableValues table ctxt) }
     ) ctxt
   let dependentTables = db |> Map.filter(fun _ t -> t.ForeignKeys.IsEmpty |> not)
   let ctxt =
     dependentTables |>
     Map.fold (
       fun (code : Context) _ table ->
-        { ctxt with Code = ctxt.Code.Append(generateTable db table code) }
+        { ctxt with Code = ctxt.Code.Append(generateTableValues table code) }
     ) ctxt
   ctxt
 
