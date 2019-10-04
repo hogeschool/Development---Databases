@@ -13,7 +13,7 @@ let userColumns : List<Column> =
 let userPK = [userColumns.[0]]
 let userFK = Map.empty
 let user : TableDefinition =
-  TableDefinition.Create("User",userColumns,userFK,userPK,100)
+  TableDefinition.Create("User",userColumns,userFK,userPK,1000)
 
 let gameColumns =
   [
@@ -29,7 +29,7 @@ let gamePK =
     gameColumns.[1]
   ]
 let gameFK = Map.empty
-let game = TableDefinition.Create("Game",gameColumns,gameFK,gamePK,50)
+let game = TableDefinition.Create("Game",gameColumns,gameFK,gamePK,500)
 
 let userGameColumns =
   [
@@ -56,7 +56,7 @@ let userGamePK =
     userGameColumns.[2]
   ]
 let userGame =
-  TableDefinition.Create("User_Game",userGameColumns,userGameFK,userGamePK,50)
+  TableDefinition.Create("User_Game",userGameColumns,userGameFK,userGamePK,250)
 
 let VGdb =
   [

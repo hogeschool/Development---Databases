@@ -107,27 +107,6 @@ type private Context =
         GeneratedPKs = Map.empty
       }
 
-let private getRecordColumnValues (columns : List<string>) (records : List<Record>) 
-  : Map<string,List<Value>> =
-  columns |>
-  List.fold(
-    fun values column ->
-      let currentRecordColumn =
-        records |>
-        List.map(
-          fun r ->
-            r |>
-              Map.filter(fun c v -> c = column)
-        )
-      let (columnValues : List<Value>) =
-        currentRecordColumn |>
-        List.fold(
-          fun vs r -> r.[column] :: vs     
-        ) [] |> List.rev
-      values.Add(column,columnValues)
-
-  ) Map.empty
-
 let rec private generatePKValues
   (db : Map<string,TableDefinition>)
   (table : TableDefinition) 
@@ -254,7 +233,7 @@ and private generateFKColumnValues
   
   fkNotPK |>
   Map.fold(
-    fun (ctxt : Context,values : Record) tableName fkColumns ->
+    fun (ctxt : Context,values : Record) tableName _ ->
       let tablePkColumns = db.[tableName].PrimaryKey
       match ctxt.GeneratedTables.TryFind(tableName) with
       | None -> 
