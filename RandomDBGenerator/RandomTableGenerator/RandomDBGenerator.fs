@@ -71,7 +71,7 @@ type Column =
         Type = _type
       }
 
-type ForeignKeys = Map<string,List<Column>>
+type ForeignKeys = Map<string,List<Column * Column>>
 
 and TableDefinition =
   {
@@ -95,9 +95,9 @@ type private Record = Map<string,Value>
 
 type private Context =
   {
-    Code                : StringBuilder
-    GeneratedTables     : Map<string,List<Record>>
-    GeneratedPKs        : Map<string,List<Record>>
+    Code                  : StringBuilder
+    GeneratedTables       : Map<string,List<Record>>
+    GeneratedPKs          : Map<string,List<Record>>
   }
   with
     static member Empty =
@@ -107,18 +107,87 @@ type private Context =
         GeneratedPKs = Map.empty
       }
 
-let private getRecordColumnValues (column : string) (records : List<Record>) : List<Value> =
-  records |>
+let private getRecordColumnValues (columns : List<string>) (records : List<Record>) 
+  : Map<string,List<Value>> =
+  columns |>
   List.fold(
-    fun values records ->
-      records.[column] :: values
-  ) []
+    fun values column ->
+      let currentRecordColumn =
+        records |>
+        List.map(
+          fun r ->
+            r |>
+              Map.filter(fun c v -> c = column)
+        )
+      let (columnValues : List<Value>) =
+        currentRecordColumn |>
+        List.fold(
+          fun vs r -> r.[column] :: vs     
+        ) [] |> List.rev
+      values.Add(column,columnValues)
 
-let rec private generatePKValues (table : TableDefinition) (ctxt : Context) =
-  let pkValues =
+  ) Map.empty
+
+let rec private generatePKValues
+  (db : Map<string,TableDefinition>)
+  (table : TableDefinition) 
+  (ctxt : Context) =
+  let pkFKColumns =
     table.PrimaryKey |>
-    List.map ( fun c -> c.Name,c.Type.Random() ) |>
+    List.filter(
+      fun c -> 
+        table.ForeignKeys |> 
+        Map.exists(fun _ v -> v |> List.map fst |> List.contains(c))
+    )
+  let pkColumnsNotFK =
+    table.PrimaryKey |> 
+    List.except pkFKColumns
+  let pkNotFKValues =
+    pkColumnsNotFK |>
+    List.map (fun c -> 
+        c.Name,c.Type.Random() ) |>
     Map.ofList
+
+  let pkFkRefColumns =
+    table.ForeignKeys |>
+    Map.filter(
+      fun _ refs ->
+        pkFKColumns |> 
+        List.exists(
+          fun c -> 
+            refs |> List.exists(
+              fun (referencingColumn,_) -> referencingColumn = c 
+          )
+        )
+    )
+
+  let pkFKValues =
+    pkFkRefColumns |>
+    Map.fold(
+      fun record table cols ->
+        let recordsOfChoice =
+          ctxt.GeneratedTables.[table] |>
+          List.map (
+            fun rs ->
+              rs |> Map.filter(fun c _ -> 
+                cols |> List.map snd |> List.exists (fun c1 -> c1.Name = c)
+              )
+          )
+        let randomValues = recordsOfChoice.[random.Next(recordsOfChoice.Length)]
+        let valuesWithReplacedColumnNames =
+          randomValues |>
+          Map.fold(
+            fun (vals : Map<string,Value>) column value ->
+              let referencingCol,_ =
+                cols |>
+                List.find(fun (_,c2) -> column = c2.Name)
+              vals.Add(referencingCol.Name,value)
+          ) Map.empty
+        mergeMaps record valuesWithReplacedColumnNames
+    ) Map.empty
+
+  let pkValues = mergeMaps pkNotFKValues pkFKValues
+  
   let pkExistingRecords =
     match ctxt.GeneratedPKs.TryFind(table.Name) with
     | Some records ->
@@ -135,6 +204,7 @@ let rec private generatePKValues (table : TableDefinition) (ctxt : Context) =
       )
     | None -> []
   if 
+    pkExistingRecords.Length > 0 &&
     pkValues |> 
     Map.forall(
       fun c v ->
@@ -143,11 +213,11 @@ let rec private generatePKValues (table : TableDefinition) (ctxt : Context) =
           record.[c] = v)
     ) 
   then
-    generatePKValues table ctxt
+    generatePKValues db table ctxt
   else
     pkValues
 
-let private generateStandardColumnsValues
+and private generateStandardColumnsValues
   (table : TableDefinition) =
   
   let standardColumns =
@@ -158,7 +228,7 @@ let private generateStandardColumnsValues
           table.ForeignKeys |> mapItems |> List.concat
         table.PrimaryKey |> List.contains(tableColumn) |> not && 
         (
-          fkColumns |>
+          fkColumns |> List.map fst |>
           List.contains(tableColumn) |> not)
     )
 
@@ -166,14 +236,25 @@ let private generateStandardColumnsValues
   List.map (fun c -> c.Name,c.Type.Random()) |>
   Map.ofList
 
-let private generateFKColumnValues
+and private generateFKColumnValues
   (db : Map<string,TableDefinition>)
   (table : TableDefinition)
-  (ctxt : Context) =
+  (ctxt : Context) : Context * Record =
+
+  let fkNotPK =
+    table.ForeignKeys |>
+    Map.filter(
+      fun table cols -> 
+        cols |>
+        List.exists(
+          fun (_,c) ->
+            db.[table].PrimaryKey |> List.contains(c) |> not
+        )
+    ) 
   
-  table.ForeignKeys |>
+  fkNotPK |>
   Map.fold(
-    fun (values : Record) tableName fkColumns ->
+    fun (ctxt : Context,values : Record) tableName fkColumns ->
       let tablePkColumns = db.[tableName].PrimaryKey
       match ctxt.GeneratedTables.TryFind(tableName) with
       | None -> 
@@ -185,18 +266,28 @@ let private generateFKColumnValues
               fun r ->
                 r |> Map.filter (fun c _ -> tablePkColumns |> List.exists(fun col -> col.Name = c))
             )
-          let fkValueRandomValues =
-            fkColumns |>
-            List.fold(
-              fun (record : Record) (c : Column) ->
-                let valuesOfChoice = getRecordColumnValues c.Name recordFKColumns
-                let randomValue = randomListElement random valuesOfChoice
-                match randomValue with
-                | None -> raise(CodeGenerationException(sprintf "No values found for foreign key column %A" c))
-                | Some v -> record.Add(c.Name,v)
-            ) Map.empty
-          mergeMaps values fkValueRandomValues
-    ) Map.empty
+          let randomFKRecord = recordFKColumns.[random.Next(recordFKColumns.Length)]
+          let pkValuesInFK =
+            randomFKRecord |>
+            Map.filter(
+              fun c _ ->
+                table.PrimaryKey |> List.exists(fun c1 -> c1.Name = c)
+            )
+          match ctxt.GeneratedPKs.TryFind(table.Name) with
+          | Some records when 
+              records |> List.contains(pkValuesInFK) ->
+              generateFKColumnValues db table ctxt
+          | _ ->
+            let ctxt =
+              {
+                ctxt with
+                  GeneratedPKs =
+                    match ctxt.GeneratedPKs.TryFind(table.Name) with
+                    | Some records -> ctxt.GeneratedPKs.Add(table.Name,pkValuesInFK :: records)
+                    | None -> ctxt.GeneratedPKs.Add(table.Name,[pkValuesInFK])
+              }
+            ctxt,mergeMaps values randomFKRecord
+    ) (ctxt,Map.empty)
 
 
 let private generateInsertCode (table : string) (records : List<Record>) =
@@ -231,9 +322,9 @@ let rec private generateTableValues
     [1..table.Rows] |>
     List.fold(
       fun (ctxt,records : List<Record>) _ ->
-        let pkValues = generatePKValues table ctxt
+        let pkValues = generatePKValues db table ctxt
         let standardValues = generateStandardColumnsValues table
-        let fkValues = generateFKColumnValues db table ctxt
+        let ctxt,fkValues = generateFKColumnValues db table ctxt
         let currentRecord = mergeMaps(mergeMaps pkValues standardValues) fkValues
         let ctxt =
           { 
@@ -270,8 +361,8 @@ let private generateDB (db : Map<string,TableDefinition>) : Context  =
   let ctxt =
     dependentTables |>
     Map.fold (
-      fun (code : Context) _ table ->
-        { ctxt with Code = ctxt.Code.Append(generateTableValues db table code) }
+      fun (ctxt : Context) _ table ->
+        generateTableValues db table ctxt
     ) ctxt
   ctxt
 
