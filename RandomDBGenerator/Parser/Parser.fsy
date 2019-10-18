@@ -32,7 +32,8 @@
 // actions executed as rules are reduced.  
 start: tableDefinition EOF { $1 }
 
-columns: 
+columns:
+
 
 tableDefinition: 
   TABLE ID columns foreignKeys primaryKey WITH ROWS INT { 

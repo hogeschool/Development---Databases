@@ -11,13 +11,11 @@
     <Compile Include="Parser.fs" />
     <Compile Include="Lexer.fs" />
     <Compile Include="Compiler.fs" />
+  </ItemGroup>
 
-    <FsYacc Include="Parser.fsy">
-      <OtherFlags>--module Parser</OtherFlags>
-    </FsYacc>
-    <FsLex Include="Lexer.fsl">
-      <OtherFlags>--unicode</OtherFlags>
-    </FsLex>
+  <ItemGroup>
+    <None Include="Lexer.fsl" />
+    <None Include="Parser.fsy" />
   </ItemGroup>
 
   <ItemGroup>
