@@ -1,0 +1,41 @@
+%{
+  open GeneratorLanguage 
+%}
+
+
+// The start token becomes a parser function in the compiled code:
+%start start
+
+// Regular tokens
+%token <System.Int32> INT  
+%token <System.Double> DECIMAL
+%token <System.String> ID
+%token <System.String> STRING
+%token < bool > BOOLEAN
+%token < string > DATE
+
+%token COMMA
+%token TABLE WITH ROWS 
+
+%token EOF
+
+// This is the type of the data produced by a successful reduction of the 'start'
+// symbol:
+%type < GeneratorLanguage.TableDefinition  > start
+
+%left COMMA
+%nonassoc 
+ 
+%%
+
+// These are the rules of the grammar along with the F# code of the 
+// actions executed as rules are reduced.  
+start: tableDefinition EOF { $1 }
+
+columns: 
+
+tableDefinition: 
+  TABLE ID columns foreignKeys primaryKey WITH ROWS INT { 
+    TableDefinition.Create($2,$3,$4,$5,$8)  
+  }
+
