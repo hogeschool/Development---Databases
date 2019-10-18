@@ -11,7 +11,7 @@ let userColumns : List<Column> =
     { Name = "Balance"; Type = Real(0.0,1500.0) }
     { Name = "CreditCardNo"; Type = Text(16) }
   ]
-let userPK = [userColumns.[0]]
+let userPK = [userColumns.[0].Name]
 let userFK = Map.empty
 let user : TableDefinition =
   TableDefinition.Create("User",userColumns,userFK,userPK,1000)
@@ -26,8 +26,8 @@ let gameColumns =
   ]
 let gamePK =
   [
-    gameColumns.[0]
-    gameColumns.[1]
+    gameColumns.[0].Name
+    gameColumns.[1].Name
   ]
 let gameFK = Map.empty
 let game = TableDefinition.Create("Game",gameColumns,gameFK,gamePK,500)
@@ -42,19 +42,19 @@ let userGameFK =
   [
     "User",
       [
-        userGameColumns.[0],userColumns.[0]
+        userGameColumns.[0].Name,userColumns.[0].Name
       ]
     "Game",
       [
-        userGameColumns.[1],gameColumns.[0]
-        userGameColumns.[2],gameColumns.[1]
+        userGameColumns.[1].Name,gameColumns.[0].Name
+        userGameColumns.[2].Name,gameColumns.[1].Name
       ]
   ] |> Map.ofList
 let userGamePK = 
   [
-    userGameColumns.[0]
-    userGameColumns.[1]
-    userGameColumns.[2]
+    userGameColumns.[0].Name
+    userGameColumns.[1].Name
+    userGameColumns.[2].Name
   ]
 let userGame =
   TableDefinition.Create("User_Game",userGameColumns,userGameFK,userGamePK,250)

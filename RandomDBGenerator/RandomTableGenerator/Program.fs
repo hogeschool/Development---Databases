@@ -7,6 +7,6 @@ open Compiler
 [<EntryPoint>]
 let main argv =
   let compiledProgram = compile (CompilerOptions.File argv.[0])
-  printfn "%d" compiledProgram
+  printfn "%A" compiledProgram
   //generate "" "test.sql" VGdb
   0

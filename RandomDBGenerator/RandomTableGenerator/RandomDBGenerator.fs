@@ -44,8 +44,9 @@ let rec private generatePKValues
     List.except pkFKColumns
   let pkNotFKValues =
     pkColumnsNotFK |>
-    List.map (fun c -> 
-        c.Name,c.Type.Random(random) ) |>
+    List.map (fun c ->
+        let cType = (table.Columns |> List.find(fun c1 -> c1.Name = c)).Type
+        c,cType.Random(random) ) |>
     Map.ofList
 
   let pkFkRefColumns =
@@ -56,7 +57,7 @@ let rec private generatePKValues
         List.exists(
           fun c -> 
             refs |> List.exists(
-              fun (referencingColumn,_) -> referencingColumn = c 
+              fun (referencingColumn,_) -> referencingColumn = c
           )
         )
     )
@@ -70,7 +71,7 @@ let rec private generatePKValues
           List.map (
             fun rs ->
               rs |> Map.filter(fun c _ -> 
-                cols |> List.map snd |> List.exists (fun c1 -> c1.Name = c)
+                cols |> List.map snd |> List.exists (fun c1 -> c1 = c)
               )
           )
         let randomValues = recordsOfChoice.[random.Next(recordsOfChoice.Length)]
@@ -80,8 +81,8 @@ let rec private generatePKValues
             fun (vals : Map<string,Value>) column value ->
               let referencingCol,_ =
                 cols |>
-                List.find(fun (_,c2) -> column = c2.Name)
-              vals.Add(referencingCol.Name,value)
+                List.find(fun (_,c2) -> column = c2)
+              vals.Add(referencingCol,value)
           ) Map.empty
         mergeMaps record valuesWithReplacedColumnNames
     ) Map.empty
@@ -126,10 +127,10 @@ and private generateStandardColumnsValues
       fun tableColumn ->
         let fkColumns =
           table.ForeignKeys |> mapItems |> List.concat
-        table.PrimaryKey |> List.contains(tableColumn) |> not && 
+        table.PrimaryKey |> List.exists(fun c -> c = tableColumn.Name) |> not && 
         (
           fkColumns |> List.map fst |>
-          List.contains(tableColumn) |> not)
+          List.contains(tableColumn.Name) |> not)
     )
 
   standardColumns |>
@@ -148,7 +149,7 @@ and private generateFKColumnValues
         cols |>
         List.exists(
           fun (_,c) ->
-            db.[table].PrimaryKey |> List.contains(c) |> not
+            db.[table].PrimaryKey |> List.exists(fun c1 -> c1 = c) |> not
         )
     ) 
   
@@ -164,14 +165,14 @@ and private generateFKColumnValues
             records |>
             List.map (
               fun r ->
-                r |> Map.filter (fun c _ -> tablePkColumns |> List.exists(fun col -> col.Name = c))
+                r |> Map.filter (fun c _ -> tablePkColumns |> List.exists(fun col -> col = c))
             )
           let randomFKRecord = recordFKColumns.[random.Next(recordFKColumns.Length)]
           let pkValuesInFK =
             randomFKRecord |>
             Map.filter(
               fun c _ ->
-                table.PrimaryKey |> List.exists(fun c1 -> c1.Name = c)
+                table.PrimaryKey |> List.exists(fun c1 -> c1 = c)
             )
           match ctxt.GeneratedPKs.TryFind(table.Name) with
           | Some records when 

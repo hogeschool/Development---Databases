@@ -63,14 +63,14 @@ type Column =
         Type = _type
       }
 
-type ForeignKeys = Map<string,List<Column * Column>>
+type ForeignKeys = Map<string,List<string * string>>
 
 and TableDefinition =
   {
     Name            : string
     Columns         : List<Column>
     ForeignKeys     : ForeignKeys
-    PrimaryKey      : List<Column>
+    PrimaryKey      : List<string>
     Rows            : int
   }
   with

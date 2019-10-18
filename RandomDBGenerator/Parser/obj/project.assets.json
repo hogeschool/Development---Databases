@@ -943,6 +943,7 @@
     ".NETCoreApp,Version=v2.1": [
       "FSharp.Core >= 4.5.2",
       "FsLexYacc >= 9.0.2",
+      "FsLexYacc.Runtime >= 9.0.2",
       "Microsoft.NETCore.App >= 2.1.0"
     ]
   },
@@ -987,6 +988,10 @@
             "version": "[4.5.2, )"
           },
           "FsLexYacc": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
+          "FsLexYacc.Runtime": {
             "target": "Package",
             "version": "[9.0.2, )"
           },

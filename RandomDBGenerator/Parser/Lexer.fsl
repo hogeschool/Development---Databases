@@ -28,10 +28,25 @@ let date = digit+ '-' digit+ '-' digit+ 'T' digit+ ':' digit+ ':' digit+ '.' dig
 rule tokenstream = parse
 | whitespace	{ tokenstream lexbuf }
 | newline	{ newline lexbuf; tokenstream lexbuf }
+| '(' { Parser.LPAR }
+| ')' { Parser.RPAR }
+| '[' { Parser.LRANGE }
+| ']' { Parser.RRANGE } 
 | ',' { Parser.COMMA }
+| ';' { Parser.SEMICOLON }
 | "table" { Parser.TABLE }
 | "with" { Parser.WITH }
 | "rows" { Parser.ROWS }
+| ("integer" | "int") { Parser.TYPE_INTEGER }
+| "varchar" { Parser.TYPE_VARCHAR }
+| "text" { Parser.TYPE_TEXT }
+| "date" { Parser.TYPE_DATE }
+| "real" { Parser.TYPE_REAL }
+| "boolean" { Parser.TYPE_BOOLEAN }
+| "foreign" { Parser.FOREIGN }
+| "primary" { Parser.PRIMARY }
+| "key" { Parser.KEY }
+| "references" { Parser.REFERENCES }
 | "true" | "false" { Parser.BOOLEAN (Boolean.Parse(LexBuffer<_>.LexemeString lexbuf)) }
 | date { Parser.DATE (LexBuffer<_>.LexemeString lexbuf) }
 | ['-']?digit+   { Parser.INT (Int32.Parse(LexBuffer<_>.LexemeString lexbuf)) } 

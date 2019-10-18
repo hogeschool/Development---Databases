@@ -1,0 +1,132 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.1",
+    "signature": "fb376b81d795cc55eaef5a3831860a58c7ccd8d2"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.1": {
+      "RandomDatabaseGenerator/1.0.0": {
+        "dependencies": {
+          "FSharp.Core": "4.5.2",
+          "Parser": "1.0.0"
+        },
+        "runtime": {
+          "RandomDatabaseGenerator.dll": {}
+        }
+      },
+      "FSharp.Core/4.5.2": {
+        "runtime": {
+          "lib/netstandard1.6/FSharp.Core.dll": {
+            "assemblyVersion": "4.5.0.0",
+            "fileVersion": "2018.7.27.2"
+          }
+        },
+        "resources": {
+          "lib/netstandard1.6/cs/FSharp.Core.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/netstandard1.6/de/FSharp.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard1.6/en/FSharp.Core.resources.dll": {
+            "locale": "en"
+          },
+          "lib/netstandard1.6/es/FSharp.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard1.6/fr/FSharp.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard1.6/it/FSharp.Core.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard1.6/ja/FSharp.Core.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard1.6/ko/FSharp.Core.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard1.6/pl/FSharp.Core.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/netstandard1.6/pt-BR/FSharp.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard1.6/ru/FSharp.Core.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard1.6/tr/FSharp.Core.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/netstandard1.6/zh-Hans/FSharp.Core.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard1.6/zh-Hant/FSharp.Core.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "FsLexYacc/9.0.2": {
+        "dependencies": {
+          "FSharp.Core": "4.5.2",
+          "FsLexYacc.Runtime": "9.0.2"
+        }
+      },
+      "FsLexYacc.Runtime/9.0.2": {
+        "dependencies": {
+          "FSharp.Core": "4.5.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FsLexYacc.Runtime.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Parser/1.0.0": {
+        "dependencies": {
+          "FSharp.Core": "4.5.2",
+          "FsLexYacc": "9.0.2",
+          "FsLexYacc.Runtime": "9.0.2"
+        },
+        "runtime": {
+          "Parser.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RandomDatabaseGenerator/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FSharp.Core/4.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-apbdQOjzsjQ637kTWQuW29jqwY18jsHMyNC5A+TPJZKFEIE2cIfQWf3V7+mXrxlbX69BueYkv293/g70wuXuRw==",
+      "path": "fsharp.core/4.5.2",
+      "hashPath": "fsharp.core.4.5.2.nupkg.sha512"
+    },
+    "FsLexYacc/9.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-InLAqXl5J13rqFyR7THtaujyf+c3zjDkLH2k9PqsYLmwWV3Wg6WyXJ8ltEzQ8GNO+ya5aCCtiVPLkxFXL2VCiQ==",
+      "path": "fslexyacc/9.0.2",
+      "hashPath": "fslexyacc.9.0.2.nupkg.sha512"
+    },
+    "FsLexYacc.Runtime/9.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9DbxDiuuRg/bglWNr/YLW8/+KNEsm1vFB/6FEzMpA9PrtuoPXpot8KYxl5BQUdVe3h22Kc6K1jW4qJwkEtAhLg==",
+      "path": "fslexyacc.runtime/9.0.2",
+      "hashPath": "fslexyacc.runtime.9.0.2.nupkg.sha512"
+    },
+    "Parser/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

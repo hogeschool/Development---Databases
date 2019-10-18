@@ -288,7 +288,8 @@
         "framework": ".NETCoreApp,Version=v2.1",
         "dependencies": {
           "FSharp.Core": "4.5.2",
-          "FsLexYacc": "9.0.2"
+          "FsLexYacc": "9.0.2",
+          "FsLexYacc.Runtime": "9.0.2"
         },
         "compile": {
           "bin/placeholder/Parser.dll": {}
