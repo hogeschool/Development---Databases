@@ -67,6 +67,7 @@ type nonTerminalId =
     | NONTERM_foreignKeys
     | NONTERM_foreignKeySeq
     | NONTERM_tableDefinition
+    | NONTERM_tableDefinitions
 /// This function maps tokens to integer indexes
 val tagOfToken: token -> int
 
@@ -78,4 +79,4 @@ val prodIdxToNonTerminal: int -> nonTerminalId
 
 /// This function gets the name of a token as a string
 val token_to_string: token -> string
-val start : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( GeneratorLanguage.TableDefinition ) 
+val start : (FSharp.Text.Lexing.LexBuffer<'cty> -> token) -> FSharp.Text.Lexing.LexBuffer<'cty> -> ( List<GeneratorLanguage.TableDefinition> ) 

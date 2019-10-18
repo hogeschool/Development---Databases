@@ -1,6 +1,5 @@
 ﻿module Databases
 
-open DBGenerator
 open GeneratorLanguage
 
 let userColumns : List<Column> =
