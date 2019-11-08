@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RandomDatabaseGenerator", "RandomTableGenerator\RandomDatabaseGenerator.fsproj", "{031725B0-FDFD-4240-A723-ECF4EAB87323}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Parser", "Parser\Parser.fsproj", "{BCAF9908-A2BF-49F6-97A8-426E6AE0CC88}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{031725B0-FDFD-4240-A723-ECF4EAB87323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{031725B0-FDFD-4240-A723-ECF4EAB87323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{031725B0-FDFD-4240-A723-ECF4EAB87323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{031725B0-FDFD-4240-A723-ECF4EAB87323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCAF9908-A2BF-49F6-97A8-426E6AE0CC88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCAF9908-A2BF-49F6-97A8-426E6AE0CC88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCAF9908-A2BF-49F6-97A8-426E6AE0CC88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCAF9908-A2BF-49F6-97A8-426E6AE0CC88}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DBE72DC-7D5C-4D24-AFAE-44F487AACB18}
+	EndGlobalSection
+EndGlobal
