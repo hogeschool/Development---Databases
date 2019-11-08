@@ -126,6 +126,10 @@ sympy-plots-for-*.tex/
 *.sav
 
 *.lb
+*.db
+*.dtbcache
+*.suo
+.vs/
 
 Patterns of Enterprise Application Architecture.pdf
 
