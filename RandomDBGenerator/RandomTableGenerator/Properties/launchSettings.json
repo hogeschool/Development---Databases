@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RandomDatabaseGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-f Tests/test1.dbg Generated test1.sql"
+    }
+  }
+}

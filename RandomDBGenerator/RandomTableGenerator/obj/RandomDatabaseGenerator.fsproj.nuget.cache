@@ -1,5 +1,9 @@
 {
   "version": 1,
+<<<<<<< HEAD
   "dgSpecHash": "zPVjXCmMylKpddnSzM0mwnXpzuOn25JjhgrE/7t6OJr/mXNByc5meMQNnVfdKC7cYNSxz8pN35DAOjjPMYzzKw==",
+=======
+  "dgSpecHash": "QTqafwkXfTj7KgtGYWjuAE2Lad630BE7g6ZyPro7Sxev9/g5baTMCAlNkwB7dECW1+dOemq1cXdxlF6cLFYu7A==",
+>>>>>>> feature/database-generator-parser
   "success": true
 }

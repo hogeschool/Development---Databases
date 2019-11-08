@@ -4,11 +4,17 @@ open System.Text
 open System
 open Utils
 open System.IO
+<<<<<<< HEAD
+=======
+open GeneratorLanguage
+open Compiler
+>>>>>>> feature/database-generator-parser
 
 let random = Random() 
 
 exception CodeGenerationException of string
 
+<<<<<<< HEAD
 type Value =
 | Integer of int
 | Text of string
@@ -91,6 +97,10 @@ and TableDefinition =
         Rows = rows
       }
 
+=======
+            
+
+>>>>>>> feature/database-generator-parser
 type private Record = Map<string,Value>
 
 type private Context =
@@ -123,8 +133,14 @@ let rec private generatePKValues
     List.except pkFKColumns
   let pkNotFKValues =
     pkColumnsNotFK |>
+<<<<<<< HEAD
     List.map (fun c -> 
         c.Name,c.Type.Random() ) |>
+=======
+    List.map (fun c ->
+        let cType = (table.Columns |> List.find(fun c1 -> c1.Name = c)).Type
+        c,cType.Random(random) ) |>
+>>>>>>> feature/database-generator-parser
     Map.ofList
 
   let pkFkRefColumns =
@@ -135,7 +151,11 @@ let rec private generatePKValues
         List.exists(
           fun c -> 
             refs |> List.exists(
+<<<<<<< HEAD
               fun (referencingColumn,_) -> referencingColumn = c 
+=======
+              fun (referencingColumn,_) -> referencingColumn = c
+>>>>>>> feature/database-generator-parser
           )
         )
     )
@@ -149,7 +169,11 @@ let rec private generatePKValues
           List.map (
             fun rs ->
               rs |> Map.filter(fun c _ -> 
+<<<<<<< HEAD
                 cols |> List.map snd |> List.exists (fun c1 -> c1.Name = c)
+=======
+                cols |> List.map snd |> List.exists (fun c1 -> c1 = c)
+>>>>>>> feature/database-generator-parser
               )
           )
         let randomValues = recordsOfChoice.[random.Next(recordsOfChoice.Length)]
@@ -159,8 +183,13 @@ let rec private generatePKValues
             fun (vals : Map<string,Value>) column value ->
               let referencingCol,_ =
                 cols |>
+<<<<<<< HEAD
                 List.find(fun (_,c2) -> column = c2.Name)
               vals.Add(referencingCol.Name,value)
+=======
+                List.find(fun (_,c2) -> column = c2)
+              vals.Add(referencingCol,value)
+>>>>>>> feature/database-generator-parser
           ) Map.empty
         mergeMaps record valuesWithReplacedColumnNames
     ) Map.empty
@@ -205,6 +234,7 @@ and private generateStandardColumnsValues
       fun tableColumn ->
         let fkColumns =
           table.ForeignKeys |> mapItems |> List.concat
+<<<<<<< HEAD
         table.PrimaryKey |> List.contains(tableColumn) |> not && 
         (
           fkColumns |> List.map fst |>
@@ -213,6 +243,16 @@ and private generateStandardColumnsValues
 
   standardColumns |>
   List.map (fun c -> c.Name,c.Type.Random()) |>
+=======
+        table.PrimaryKey |> List.exists(fun c -> c = tableColumn.Name) |> not && 
+        (
+          fkColumns |> List.map fst |>
+          List.contains(tableColumn.Name) |> not)
+    )
+
+  standardColumns |>
+  List.map (fun c -> c.Name,c.Type.Random(random)) |>
+>>>>>>> feature/database-generator-parser
   Map.ofList
 
 and private generateFKColumnValues
@@ -227,7 +267,11 @@ and private generateFKColumnValues
         cols |>
         List.exists(
           fun (_,c) ->
+<<<<<<< HEAD
             db.[table].PrimaryKey |> List.contains(c) |> not
+=======
+            db.[table].PrimaryKey |> List.exists(fun c1 -> c1 = c) |> not
+>>>>>>> feature/database-generator-parser
         )
     ) 
   
@@ -243,14 +287,22 @@ and private generateFKColumnValues
             records |>
             List.map (
               fun r ->
+<<<<<<< HEAD
                 r |> Map.filter (fun c _ -> tablePkColumns |> List.exists(fun col -> col.Name = c))
+=======
+                r |> Map.filter (fun c _ -> tablePkColumns |> List.exists(fun col -> col = c))
+>>>>>>> feature/database-generator-parser
             )
           let randomFKRecord = recordFKColumns.[random.Next(recordFKColumns.Length)]
           let pkValuesInFK =
             randomFKRecord |>
             Map.filter(
               fun c _ ->
+<<<<<<< HEAD
                 table.PrimaryKey |> List.exists(fun c1 -> c1.Name = c)
+=======
+                table.PrimaryKey |> List.exists(fun c1 -> c1 = c)
+>>>>>>> feature/database-generator-parser
             )
           match ctxt.GeneratedPKs.TryFind(table.Name) with
           | Some records when 
@@ -345,12 +397,30 @@ let private generateDB (db : Map<string,TableDefinition>) : Context  =
     ) ctxt
   ctxt
 
+<<<<<<< HEAD
 let compile (path : string) (fileName : string) (db : Map<string,TableDefinition>) : unit =
+=======
+let generate
+  (path : string) 
+  (fileName : string) 
+  (db : Map<string,TableDefinition>) : unit =
+>>>>>>> feature/database-generator-parser
   if Directory.Exists path |> not && path <> "" then
     Directory.CreateDirectory path |> ignore
   let ctxt = generateDB db
   let code = ctxt.Code.ToString()
   File.WriteAllText(Path.Combine(path,fileName),code)
+<<<<<<< HEAD
+=======
+
+let compile
+  (input : CompilerOptions)
+  (outputPath : string)
+  (outputFileName : string) =
+
+  let db = parse input
+  do generate outputPath outputFileName db
+>>>>>>> feature/database-generator-parser
   
   
   
