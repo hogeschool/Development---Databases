@@ -1,9 +1,0 @@
-﻿TODO:
-- Add commands to empty the tables.
-- Test table generation with relationships.
-- Relationship tables might containtain duplicates relationships.
-    - if the primary key column is also belonging to a fk, then use the fk function to generate its values.
-BUGFIX:
-- If the fK colunm name does not match the respective pk column the generation crashes.
-    - Change the type definition of FK into Map<string,List<Column * Column>> 
-      to connect the referencing column with the referenced column

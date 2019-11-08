@@ -1,19 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "C:\\Users\\Francesco\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj": {}
-  },
-  "projects": {
-    "C:\\Users\\Francesco\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\Users\\Francesco\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
-        "projectName": "RandomDatabaseGenerator",
-        "projectPath": "C:\\Users\\Francesco\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj",
-        "packagesPath": "C:\\Users\\Francesco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Francesco\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\obj\\",
-=======
     "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\RandomTableGenerator\\RandomDatabaseGenerator.fsproj": {}
   },
   "projects": {
@@ -25,48 +12,28 @@
         "projectPath": "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\Parser\\Parser.fsproj",
         "packagesPath": "C:\\Users\\GiacF\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\GiacF\\OneDrive - Hogeschool Rotterdam\\Documents\\GitHub\\Development---Databases\\RandomDBGenerator\\Parser\\obj\\",
->>>>>>> feature/database-generator-parser
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-<<<<<<< HEAD
-          "C:\\Users\\Francesco\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
-        ],
-        "originalTargetFrameworks": [
-          "netcoreapp2.2"
-=======
           "C:\\Users\\GiacF\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp2.1"
->>>>>>> feature/database-generator-parser
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-<<<<<<< HEAD
-          "netcoreapp2.2": {
-=======
           "netcoreapp2.1": {
->>>>>>> feature/database-generator-parser
             "projectReferences": {}
           }
         }
       },
       "frameworks": {
-<<<<<<< HEAD
-        "netcoreapp2.2": {
-          "dependencies": {
-            "FSharp.Core": {
-              "target": "Package",
-              "version": "[4.7.0, )"
-=======
         "netcoreapp2.1": {
           "dependencies": {
             "FSharp.Core": {
@@ -135,37 +102,19 @@
             "FSharp.Core": {
               "target": "Package",
               "version": "[4.6.2, )"
->>>>>>> feature/database-generator-parser
             },
             "Microsoft.NETCore.App": {
               "suppressParent": "All",
               "target": "Package",
-<<<<<<< HEAD
-              "version": "[2.2.0, )",
-=======
               "version": "[2.1.0, )",
->>>>>>> feature/database-generator-parser
               "autoReferenced": true
             }
           },
           "imports": [
-<<<<<<< HEAD
-            "net461",
-            "net462",
-            "net47",
-            "net471",
-            "net472",
-            "net48"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
-=======
             "net461"
           ],
           "assetTargetFallback": true,
           "warn": true
->>>>>>> feature/database-generator-parser
         }
       }
     }

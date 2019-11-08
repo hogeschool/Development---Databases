@@ -1,13 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-
-open DBGenerator
-<<<<<<< HEAD
-open Databases
-
-[<EntryPoint>]
-let main argv =
-  compile "" "test.sql" VGdb
-=======
+﻿open DBGenerator
 open Compiler
 
 exception CommandLineException of string
@@ -26,5 +17,4 @@ let main argv =
         "Usage: -f <fileName> <outputDir> <outputFile>| 
         -s <program string> <outputDir> <outputFile>")
   compile input argv.[2] argv.[3]
->>>>>>> feature/database-generator-parser
   0

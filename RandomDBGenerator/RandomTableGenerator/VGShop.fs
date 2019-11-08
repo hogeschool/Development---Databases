@@ -1,10 +1,6 @@
 ﻿module Databases
 
-<<<<<<< HEAD
-open DBGenerator
-=======
 open GeneratorLanguage
->>>>>>> feature/database-generator-parser
 
 let userColumns : List<Column> =
   [
@@ -14,11 +10,7 @@ let userColumns : List<Column> =
     { Name = "Balance"; Type = Real(0.0,1500.0) }
     { Name = "CreditCardNo"; Type = Text(16) }
   ]
-<<<<<<< HEAD
-let userPK = [userColumns.[0]]
-=======
 let userPK = [userColumns.[0].Name]
->>>>>>> feature/database-generator-parser
 let userFK = Map.empty
 let user : TableDefinition =
   TableDefinition.Create("User",userColumns,userFK,userPK,1000)
@@ -33,13 +25,8 @@ let gameColumns =
   ]
 let gamePK =
   [
-<<<<<<< HEAD
-    gameColumns.[0]
-    gameColumns.[1]
-=======
     gameColumns.[0].Name
     gameColumns.[1].Name
->>>>>>> feature/database-generator-parser
   ]
 let gameFK = Map.empty
 let game = TableDefinition.Create("Game",gameColumns,gameFK,gamePK,500)
@@ -54,34 +41,19 @@ let userGameFK =
   [
     "User",
       [
-<<<<<<< HEAD
-        userGameColumns.[0],userColumns.[0]
-      ]
-    "Game",
-      [
-        userGameColumns.[1],gameColumns.[0]
-        userGameColumns.[2],gameColumns.[1]
-=======
         userGameColumns.[0].Name,userColumns.[0].Name
       ]
     "Game",
       [
         userGameColumns.[1].Name,gameColumns.[0].Name
         userGameColumns.[2].Name,gameColumns.[1].Name
->>>>>>> feature/database-generator-parser
       ]
   ] |> Map.ofList
 let userGamePK = 
   [
-<<<<<<< HEAD
-    userGameColumns.[0]
-    userGameColumns.[1]
-    userGameColumns.[2]
-=======
     userGameColumns.[0].Name
     userGameColumns.[1].Name
     userGameColumns.[2].Name
->>>>>>> feature/database-generator-parser
   ]
 let userGame =
   TableDefinition.Create("User_Game",userGameColumns,userGameFK,userGamePK,250)
@@ -92,6 +64,3 @@ let VGdb =
     game.Name,game
     userGame.Name,userGame
   ] |> Map.ofList
-  
-  
-

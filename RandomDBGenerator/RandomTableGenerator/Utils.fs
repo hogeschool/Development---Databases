@@ -17,7 +17,3 @@ let addMapList (key : 'k,value : 'v) (m : Map<'k,List<'v>>) : Map<'k,List<'v>> =
   match m.TryFind(key) with
   | None -> m.Add(key,[value])
   | Some l -> m.Add(key,value :: l)
-<<<<<<< HEAD
-=======
-
->>>>>>> feature/database-generator-parser

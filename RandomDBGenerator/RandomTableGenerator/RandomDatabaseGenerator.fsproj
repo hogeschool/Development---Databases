@@ -2,13 +2,6 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-<<<<<<< HEAD
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="todo.txt" />
-=======
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
@@ -16,19 +9,14 @@
     <None Include="Tests\test1.dbg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
->>>>>>> feature/database-generator-parser
     <Compile Include="Utils.fs" />
     <Compile Include="RandomDBGenerator.fs" />
     <Compile Include="VGShop.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
-<<<<<<< HEAD
-  <ItemGroup />
-=======
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.fsproj" />
   </ItemGroup>
->>>>>>> feature/database-generator-parser
 
 </Project>
