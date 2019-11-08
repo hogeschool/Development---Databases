@@ -5,6 +5,7 @@ open System
 open Utils
 open System.IO
 open GeneratorLanguage
+open Compiler
 
 let random = Random() 
 
@@ -276,6 +277,14 @@ let generate
   let ctxt = generateDB db
   let code = ctxt.Code.ToString()
   File.WriteAllText(Path.Combine(path,fileName),code)
+
+let compile
+  (input : CompilerOptions)
+  (outputPath : string)
+  (outputFileName : string) =
+
+  let db = parse input
+  do generate outputPath outputFileName db
   
   
   

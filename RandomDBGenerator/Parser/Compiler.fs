@@ -21,10 +21,10 @@ let private parseString (program : string) =
   let db = generateDb ast 
   db
 
-let compile 
+let parse 
   (options : CompilerOptions) =
-
   match options with
   | File f -> parseFile f
   | String s -> parseString s
+  
 
