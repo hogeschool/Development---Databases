@@ -14,5 +14,5 @@ namespace Forum.Services.Data
   public class UserExisting : IRegistrationResponse {  }
 
   public enum LoginResponse { SuccessfulLogin, Unauthorized }
-  public enum ChangePasswordResponse { Suceeded, Failed }
+  public enum ChangeProfileResponse { Suceeded, Failed }
 }

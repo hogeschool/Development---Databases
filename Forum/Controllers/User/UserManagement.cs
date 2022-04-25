@@ -38,6 +38,19 @@ namespace Forum.Controllers.Users
       }
     }
 
+    private IActionResult ProcessChangeProfileResult(ChangeProfileResponse response)
+    {
+      switch (response)
+      {
+        case ChangeProfileResponse.Failed:
+          return Unauthorized();
+        case ChangeProfileResponse.Suceeded:
+          return Ok();
+        default:
+          return StatusCode(500);
+      }
+    }
+
     [HttpPost("change-password")]
     public IActionResult ChangePassword([FromBody] ChangePasswordData changePasswordData)
     {
@@ -52,15 +65,26 @@ namespace Forum.Controllers.Users
         (session, userId) =>
         {
           var changePasswordResult = UserService.ChangePassword(userId, changePasswordData.OldPassword, changePasswordData.NewPassword);
-          switch (changePasswordResult)
-          {
-            case ChangePasswordResponse.Failed:
-              return Unauthorized();
-            case ChangePasswordResponse.Suceeded:
-              return Ok();
-            default:
-              return StatusCode(500);
-          }
+          return ProcessChangeProfileResult(changePasswordResult);
+        }
+      );
+    }
+
+    [HttpPost("change-email")]
+    public IActionResult ChangeEmail([FromQuery] string newEmail)
+    {
+      if (!ModelState.IsValid)
+      {
+        return StatusCode(400);
+      }
+      var sessionToken = HttpContext.Request.Cookies["UserLogin"];
+      return Authentication.AuthenticateAPIOperation<IActionResult>(
+        sessionToken,
+        () => Unauthorized(),
+        (session, userId) =>
+        {
+          var changeEmailResult = UserService.ChangeEmail(userId, newEmail);
+          return ProcessChangeProfileResult(changeEmailResult);
         }
       );
     }

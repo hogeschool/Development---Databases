@@ -33,4 +33,5 @@ namespace Forum.Controllers.Users
     [JsonPropertyName("newPassword")]
     public string NewPassword { get; set; }
   }
+
 }

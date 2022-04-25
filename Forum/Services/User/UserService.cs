@@ -19,14 +19,40 @@ namespace Forum.Services.Users
       Context = context;
     }
 
-    public ChangePasswordResponse ChangePassword(int userId, string oldPassword, string newPassword)
+    private IQueryable<Session> GetUserSessions(int userId) =>
+      from currentUser in Context.User
+      join session in Context.Session on currentUser.Id equals session.UserId
+      where currentUser.Id == userId
+      select session;
+
+    public ChangeProfileResponse ChangeEmail(int userId, string newEmail)
+    {
+      var user =
+        Context.User.FirstOrDefault(user => user.Id == userId);
+      
+      if (user == null)
+      {
+        return ChangeProfileResponse.Failed;
+      }
+
+      var userSessions = GetUserSessions(userId);
+
+      user.Email = newEmail;
+      Context.Session.RemoveRange(userSessions);
+      Context.SaveChanges();
+
+      return ChangeProfileResponse.Suceeded;
+      
+    }
+
+    public ChangeProfileResponse ChangePassword(int userId, string oldPassword, string newPassword)
     {
       var user =
         Context.User.FirstOrDefault(user => user.Id == userId);
 
       if (user == null)
       {
-        return ChangePasswordResponse.Failed;
+        return ChangeProfileResponse.Failed;
       }
 
       if (!PasswordHasher.CheckHash(oldPassword, new PasswordAndSalt {
@@ -34,23 +60,18 @@ namespace Forum.Services.Users
         PasswordSalt = user.PasswordSalt
       }))
       {
-        return ChangePasswordResponse.Failed;
+        return ChangeProfileResponse.Failed;
       }
 
       var newHashedPassword = PasswordHasher.Hash(newPassword);
       user.PasswordHash = newHashedPassword.PasswordHash;
       user.PasswordSalt = newHashedPassword.PasswordSalt;
 
-      var userSessions =
-        (from currentUser in Context.User
-        join session in Context.Session on currentUser.Id equals session.UserId
-        where currentUser.Id == userId
-        select session
-        );
+      var userSessions = GetUserSessions(userId);
 
       Context.Session.RemoveRange(userSessions);
       Context.SaveChanges();
-      return ChangePasswordResponse.Suceeded;
+      return ChangeProfileResponse.Suceeded;
       
     }
 
