@@ -31,6 +31,8 @@ namespace Forum.Controllers.Users
       {
         case LoginResponse.Unauthorized:
           return Unauthorized();
+        case LoginResponse.Banned:
+          return StatusCode(403, new { Reason = "banned" });
         case LoginResponse.SuccessfulLogin:
           return Ok();
         default:
@@ -44,7 +46,7 @@ namespace Forum.Controllers.Users
       {
         case ChangeProfileResponse.Failed:
           return Unauthorized();
-        case ChangeProfileResponse.Suceeded:
+        case ChangeProfileResponse.Succeeded:
           return Ok();
         default:
           return StatusCode(500);

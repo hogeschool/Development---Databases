@@ -13,6 +13,8 @@ namespace Forum.Services.Data
 
   public class UserExisting : IRegistrationResponse {  }
 
-  public enum LoginResponse { SuccessfulLogin, Unauthorized }
-  public enum ChangeProfileResponse { Suceeded, Failed }
+  public enum LoginResponse { SuccessfulLogin, Unauthorized, Banned }
+  public enum ChangeProfileResponse { Succeeded, Failed }
+
+  public enum AddFriendResponse { Succeeded, FriendExists, NotFound, BadRequest }
 }

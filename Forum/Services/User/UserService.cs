@@ -41,7 +41,7 @@ namespace Forum.Services.Users
       Context.Session.RemoveRange(userSessions);
       Context.SaveChanges();
 
-      return ChangeProfileResponse.Suceeded;
+      return ChangeProfileResponse.Succeeded;
       
     }
 
@@ -71,7 +71,7 @@ namespace Forum.Services.Users
 
       Context.Session.RemoveRange(userSessions);
       Context.SaveChanges();
-      return ChangeProfileResponse.Suceeded;
+      return ChangeProfileResponse.Succeeded;
       
     }
 
@@ -81,6 +81,10 @@ namespace Forum.Services.Users
       if (user == null)
       {
         return LoginResponse.Unauthorized;
+      }
+      if (user.Banned)
+      {
+        return LoginResponse.Banned;
       }
       if (!PasswordHasher.CheckHash(password, new PasswordAndSalt {
         PasswordHash = user.PasswordHash,

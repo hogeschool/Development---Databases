@@ -3,6 +3,7 @@ using System;
 using Forum.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Forum.Migrations
 {
     [DbContext(typeof(ForumContext))]
-    partial class ForumContextModelSnapshot : ModelSnapshot
+    [Migration("20220425151813_FriendRelationship")]
+    partial class FriendRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,7 @@ namespace Forum.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Session", (string)null);
+                    b.ToTable("Session");
                 });
 
             modelBuilder.Entity("Forum.Models.Users.AuthenticatedUser", b =>
@@ -93,7 +95,7 @@ namespace Forum.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("AuthenticatedUser", (string)null);
+                    b.ToTable("AuthenticatedUser");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("AuthenticatedUser");
                 });
@@ -110,7 +112,7 @@ namespace Forum.Migrations
 
                     b.HasIndex("FriendId");
 
-                    b.ToTable("User_Friend", (string)null);
+                    b.ToTable("User_Friend");
                 });
 
             modelBuilder.Entity("Forum.Models.Users.Admin", b =>

@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Forum.Services.Community;
 
 namespace Forum
 {
@@ -63,6 +64,7 @@ namespace Forum
       //custom services
       services.AddTransient<UserService>();
       services.AddTransient<AuthenticationHelpers>();
+      services.AddTransient<CommunityService>();
     }
 
     public void Configure(
