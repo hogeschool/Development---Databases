@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Forum.Models.Content;
+
 namespace Forum.Services.Data
 {
   public interface IRegistrationResponse {  }
@@ -17,4 +20,12 @@ namespace Forum.Services.Data
   public enum ChangeProfileResponse { Succeeded, Failed }
 
   public enum AddFriendResponse { Succeeded, FriendExists, NotFound, BadRequest }
+
+  public enum CreateContentResponse { Succeeded, ContentExists }
+
+  public class UserWithTopics
+  {
+    public string UserName { get; set; }
+    public Topic Topic { get; set; }
+  }
 }

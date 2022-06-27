@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Forum.Models.Users;
 using Forum.Models.Authentication;
+using Forum.Models.Content;
 
 namespace Forum.Models
 {
@@ -10,6 +11,9 @@ namespace Forum.Models
     public DbSet<Admin> Admin { get; set; }
     public DbSet<Session> Session { get; set; }
     public DbSet<User_Friend> User_Friend { get; set; }
+    public DbSet<News> News { get; set; }
+    public DbSet<Topic> Topic { get; set; }
+    public DbSet<Section> Section { get; set; }
     public ForumContext(DbContextOptions<ForumContext> options) : base(options){}
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -19,6 +23,12 @@ namespace Forum.Models
       );
       builder.Entity<AuthenticatedUser>(
         user => user.HasIndex(u => u.UserName).IsUnique()
+      );
+      builder.Entity<News>(
+        news => news.HasIndex(n => n.Title).IsUnique()
+      );
+      builder.Entity<Topic>(
+        topic => topic.HasIndex(t => t.Title).IsUnique()
       );
 
       builder

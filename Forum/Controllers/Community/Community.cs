@@ -1,3 +1,4 @@
+using System;
 using Forum.Models;
 using Forum.Services.Authentication;
 using Forum.Services.Community;
@@ -34,7 +35,7 @@ namespace Forum.Controllers.Community
           switch (addFriendResult)
           {
             case AddFriendResponse.FriendExists:
-              return BadRequest(new { Reson = "user exists" });
+              return BadRequest(new { Reason = "user exists" });
             case AddFriendResponse.NotFound:
               return BadRequest(new { Reason = "user not found" });
             case AddFriendResponse.BadRequest:
@@ -46,6 +47,41 @@ namespace Forum.Controllers.Community
           }
         }
       );
+    }
+
+    [HttpPost("post")]
+    public IActionResult Post([FromBody] PostData data)
+    {
+      var sessionToken = HttpContext.Request.Cookies["UserLogin"];
+      return Authentication.AuthenticateAPIOperation<IActionResult>(
+        sessionToken,
+        () => Unauthorized(),
+        (session, userId) =>
+        {
+          try
+          {
+            var result = CommunityService.CreateContent(userId, data);
+            return Ok(result);
+          }
+          catch (Exception e)
+          {
+            return StatusCode(500, new { Exception = e.Message, Stack = e.StackTrace });
+          }
+        }
+      );
+    }
+
+    [HttpGet("search")]
+    public IActionResult Search([FromQuery] string term, [FromQuery] int pageSize, [FromQuery] int pageNumber)
+    {
+      try
+      {
+        return Ok(CommunityService.Search(term, pageSize, pageNumber));
+      }
+      catch (Exception e)
+      {
+        return StatusCode(500, new { Exception = e.Message, Stack = e.StackTrace });
+      }
     }
   }
 }
