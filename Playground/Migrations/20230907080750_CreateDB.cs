@@ -4,7 +4,7 @@
 
 namespace EF__Console.Migrations
 {
-    public partial class ReaddStreetAddressToOrder : Migration
+    public partial class CreateDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
