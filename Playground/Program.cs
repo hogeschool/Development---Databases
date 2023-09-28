@@ -7,27 +7,43 @@ var r = new Random();
 using (var myData = new ProductsDb()) {
   var sw = System.Diagnostics.Stopwatch.StartNew();
   
+  IEnumerable<int> ints() {
+    var n = 0;
+    while(true) yield return n++;
+  }
+
+  var myInts = 
+    (
+      from i in ints()
+      where i % 2 == 0
+      select i
+    ).Take(100).ToList();
+
+
   var now = DateTime.Now.ToUniversalTime();
   var myQuery1 = (
     from u in myData.Users
+    join uig in myData.UsersInGroup on u.Id equals uig.UserId
+    join g in myData.Groups on uig.GroupId equals g.Id
     let name = u.Name
     let surname = u.Surname
-    let birthday = u.Birthday
     let fullname = name + " " + surname
-    where now - birthday > TimeSpan.FromDays(6)
-    orderby birthday descending
-    select new { Fullname = fullname, Birthday = birthday }
-  ).ToList();
+    let fullGroup = g.Name + " " + g.Description.Substring(0, 10) + "..."
+    orderby fullname ascending
+    select Tuple.Create(fullname, fullGroup)
+  );
 
-  // show how to do joins in the pretty syntax
   // show the translation into lambda syntax, which is more complete than the pretty LINQ-style syntax
   // show how to do joins in the lambda syntax
-  // cartesian products vs joins
   // aggregate and group by
+  // advanced modeling - inheritance and owned by
+  // more operators like Any
+  // subqueries
+  // indices for performance optimization
 
   foreach (var row in myQuery1)
   {
-    Console.WriteLine($"{row.Fullname}, {row.Birthday}");
+    Console.WriteLine($"{row.Item1}, {row.Item2}");
   }
 
   // var groups = myData.Groups
