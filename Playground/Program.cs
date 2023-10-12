@@ -6,45 +6,47 @@ using Models;
 var r = new Random();
 using (var myData = new ProductsDb()) {
   var sw = System.Diagnostics.Stopwatch.StartNew();
-  
-  IEnumerable<int> ints() {
-    var n = 0;
-    while(true) yield return n++;
+
+  // var myProducts = Enumerable.Range(0, 100).Select(i => 
+  //   r.NextDouble() > 0.5 ? 
+  //     new PerishableProduct(Guid.NewGuid(), $"Product {i+1}", (decimal)(r.NextDouble() * 90 + 10), DateOnly.FromDateTime(DateTime.UtcNow + TimeSpan.FromDays(r.Next(5,100)))) as Product
+  //   : new NonPerishableProduct(Guid.NewGuid(), $"Product {i+1}", (decimal)(r.NextDouble() * 90 + 10)) as Product
+  // ).ToArray();
+  // var myCustomers = Enumerable.Range(0, 100).Select(i => 
+  //   new Customer(Guid.NewGuid(), $"John {i+1}", $"Doe {i+1}", new DateOnly(r.Next(1970, 2005), r.Next(1, 11), r.Next(1, 25)))
+  // ).ToArray();
+  // var myOrders = Enumerable.Range(0, 100).Select(_ => 
+  //   new Order(Guid.NewGuid(), myCustomers[r.Next(myCustomers.Length)].Id, myProducts[r.Next(myProducts.Length)].Id, DateTime.UtcNow - TimeSpan.FromDays(r.Next(500)))
+  //   { DeliverTo = new StreetAddress($"Street {_}", $"City {_}")}
+  // ).ToArray();
+
+  // myData.Products.AddRange(myProducts);
+  // myData.Customers.AddRange(myCustomers);
+  // myData.Orders.AddRange(myOrders);
+  // myData.SaveChanges();
+
+  // myData.Products.Add(new PerishableProduct(Guid.NewGuid(), "Red oranges from Sicily", 10m, DateOnly.FromDateTime(DateTime.UtcNow + TimeSpan.FromDays(20))));
+  // myData.Products.Add(new PerishableProduct(Guid.NewGuid(), "Greek Yoghurt from Santorini", 5m, DateOnly.FromDateTime(DateTime.UtcNow + TimeSpan.FromDays(10))));
+  // myData.Products.Add(new PerishableProduct(Guid.NewGuid(), "Radioactive Uranium Pellets", 5000000m, DateOnly.FromDateTime(DateTime.UtcNow + TimeSpan.FromDays(365) * 160)));
+  // myData.Products.Add(new NonPerishableProduct(Guid.NewGuid(), "Airpods Pro 2nd gen.", 350m));
+  // myData.Products.Add(new NonPerishableProduct(Guid.NewGuid(), "BMW X5 e45 Plugin Hybrid", 160000m));
+  // myData.SaveChanges();
+
+
+
+  var myQuery = myData.Orders.ToArray();
+
+  foreach (var v in myQuery)
+  {
+    Console.WriteLine(v);
   }
-
-  var myInts = 
-    (
-      from i in ints()
-      where i % 2 == 0
-      select i
-    ).Take(100).ToList();
-
-
-  var now = DateTime.Now.ToUniversalTime();
-  var myQuery1 = (
-    from u in myData.Users
-    join uig in myData.UsersInGroup on u.Id equals uig.UserId
-    join g in myData.Groups on uig.GroupId equals g.Id
-    let name = u.Name
-    let surname = u.Surname
-    let fullname = name + " " + surname
-    let fullGroup = g.Name + " " + g.Description.Substring(0, 10) + "..."
-    orderby fullname ascending
-    select Tuple.Create(fullname, fullGroup)
-  );
 
   // show the translation into lambda syntax, which is more complete than the pretty LINQ-style syntax
   // show how to do joins in the lambda syntax
-  // aggregate and group by
-  // advanced modeling - inheritance and owned by
   // more operators like Any
   // subqueries
   // indices for performance optimization
 
-  foreach (var row in myQuery1)
-  {
-    Console.WriteLine($"{row.Item1}, {row.Item2}");
-  }
 
   // var groups = myData.Groups
   //   .Take(100)
@@ -82,6 +84,11 @@ namespace Models
 {
   public class ProductsDb : DbContext
   {
+    public DbSet<Customer> Customers { get; set; } = null!;
+    public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<PerishableProduct> PerishableProducts { get; set; } = null!;
+    public DbSet<NonPerishableProduct> NonPerishableProducts { get; set; } = null!;
+    public DbSet<Order> Orders { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Group> Groups { get; set; } = null!;
     public DbSet<UserInGroup> UsersInGroup { get; set; } = null!;    
@@ -107,6 +114,27 @@ namespace Models
         .WithMany(g => g.UserInGroups)
         .HasForeignKey(ug => ug.GroupId);
 
+      modelBuilder.Entity<Order>()
+        .HasOne(o => o.Product)
+        .WithMany(p => p.Orders)
+        .HasForeignKey(o => o.ProductId);
+
+      modelBuilder.Entity<Order>()
+        .HasOne(o => o.Customer)
+        .WithMany(p => p.Orders)
+        .HasForeignKey(o => o.CustomerId);
+
+      modelBuilder.Entity<Product>()
+        .HasDiscriminator(p => p.ProductType)
+        .HasValue<PerishableProduct>(ProductType.Perishable)
+        .HasValue<NonPerishableProduct>(ProductType.NonPerishable);
+
+      modelBuilder.Entity<Order>()
+        .OwnsOne(o => o.DeliverTo);
+
+      // modelBuilder.Entity<AsyncProcess<S>>()
+      //   .OwnsOne(o => o.Payload);
+
       // a user cannot be in more than one group
       // it's a 1-N relation from user to group
       // modelBuilder.Entity<UserInGroup>()
@@ -119,14 +147,47 @@ namespace Models
     }
   }
 
+  public enum ProductType { Perishable, NonPerishable }
+  public abstract record Product(Guid Id, string Name, decimal Price, ProductType ProductType) {
+    public List<Order> Orders { get; set; } = null!;
+  }
+  public record PerishableProduct(Guid Id, string Name, decimal Price, DateOnly KeepUntil) : Product(Id, Name, Price, ProductType.Perishable) {
+  }
+  public record NonPerishableProduct(Guid Id, string Name, decimal Price) : Product(Id, Name, Price, ProductType.NonPerishable) {
+  }
+
+  public record Customer(Guid Id, string Name, string Surname, DateOnly Birthday) {
+    public List<Order> Orders { get; set; } = null!;
+  }
+  public record Order(Guid Id, Guid CustomerId, Guid ProductId, DateTime When) {
+    public Customer Customer { get; set; } = null!;
+    public Product Product { get; set; } = null!;
+    public StreetAddress DeliverTo { get; set; } = null!;
+  }
+  public record StreetAddress(string Street, string City);
+
   public record User(Guid Id, string Name, string Surname, DateTime Birthday) {
     public List<UserInGroup> UserInGroups { get;set;} = null!;
-  };
+  }
   public record Group(Guid Id, string Name, string Description) {
     public List<UserInGroup> UserInGroups { get;set;} = null!;
   }
   public record UserInGroup(Guid Id, Guid UserId, Guid GroupId) {
     public User User { get;set;} = null!;
     public Group Group { get;set;} = null!;
-  };
+  }
+
+  public enum Priority { High, Medium, Low }
+  public enum Status { Running, Done, StuckOnError }
+  public class AsyncProcess<S> {
+    public Guid Id { get; set; }
+    public S Payload { get; set; }
+    public Priority Priority { get; set; }
+    public Status Status { get; set; }
+    public DateTime DueAfter { get; set; }
+    public string LogMessage { get; set; }
+    public int Retries { get; set; }
+    public Guid SMId { get; set; }
+    public int SequenceNr { get; set; }
+  }
 }

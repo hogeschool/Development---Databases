@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EF__Console.Migrations
 {
     [DbContext(typeof(ProductsDb))]
-    partial class ProductsDbModelSnapshot : ModelSnapshot
+    [Migration("20231005074543_AddProductsOrdersAndCustomers")]
+    partial class AddProductsOrdersAndCustomers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,14 +102,9 @@ namespace EF__Console.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("ProductType")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-
-                    b.HasDiscriminator<int>("ProductType");
                 });
 
             modelBuilder.Entity("Models.User", b =>
@@ -153,23 +150,6 @@ namespace EF__Console.Migrations
                     b.ToTable("UsersInGroup");
                 });
 
-            modelBuilder.Entity("Models.NonPerishableProduct", b =>
-                {
-                    b.HasBaseType("Models.Product");
-
-                    b.HasDiscriminator().HasValue(1);
-                });
-
-            modelBuilder.Entity("Models.PerishableProduct", b =>
-                {
-                    b.HasBaseType("Models.Product");
-
-                    b.Property<DateOnly>("KeepUntil")
-                        .HasColumnType("date");
-
-                    b.HasDiscriminator().HasValue(0);
-                });
-
             modelBuilder.Entity("Models.Order", b =>
                 {
                     b.HasOne("Models.Customer", "Customer")
@@ -184,31 +164,7 @@ namespace EF__Console.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Models.StreetAddress", "DeliverTo", b1 =>
-                        {
-                            b1.Property<Guid>("OrderId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.HasKey("OrderId");
-
-                            b1.ToTable("Orders");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderId");
-                        });
-
                     b.Navigation("Customer");
-
-                    b.Navigation("DeliverTo")
-                        .IsRequired();
 
                     b.Navigation("Product");
                 });
