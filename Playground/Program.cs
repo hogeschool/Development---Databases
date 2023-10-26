@@ -33,20 +33,30 @@ using (var myData = new ProductsDb()) {
   // myData.SaveChanges();
 
 
+  Expression<Func<Order, Guid>> Id = _ => _.Id;
+  Expression<Func<Order, DateTime>> When = _ => _.When;
+  Expression<Func<Order, DayOfWeek>> DayOfWeek = _ => _.When.DayOfWeek;
+  Func<IQueryable<Order>, IOrderedQueryable<Order>> WithMainOrdering<TKey>(Expression<Func<Order, TKey>> mainOrdering) =>
+    orders => orders.OrderBy(mainOrdering).ThenBy(Id);
+  Func<IQueryable<Order>, IOrderedQueryable<Order>> WithoutMainOrdering() =>
+    orders => orders.OrderBy(Id);
 
-  var myQuery = myData.Orders.ToArray();
+  var pageSize = 5;
+  Order[] getOrdersPage(Func<IQueryable<Order>, IOrderedQueryable<Order>> mainOrdering, int pageIndex) =>
+    mainOrdering(myData.Orders)
+        .Skip(pageIndex * pageSize)
+        .Take(pageSize)
+        .ToArray();
+
+  var sortByDayOfWeek = true;
+  var myQuery = getOrdersPage(sortByDayOfWeek ? WithMainOrdering(DayOfWeek) : WithoutMainOrdering(), 2);
 
   foreach (var v in myQuery)
   {
     Console.WriteLine(v);
   }
 
-  // show the translation into lambda syntax, which is more complete than the pretty LINQ-style syntax
-  // show how to do joins in the lambda syntax
-  // more operators like Any
-  // subqueries
-  // indices for performance optimization
-
+  // MVC
 
   // var groups = myData.Groups
   //   .Take(100)
